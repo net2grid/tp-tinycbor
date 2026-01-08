@@ -31,8 +31,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 set(TARGETS_EXPORT_NAME "TinyCBOR-targets")
 
-option(WITH_CBOR2JSON "Compile code to convert from CBOR to JSON" ON)
-option(WITH_FREESTANDING "Compile TinyCBOR in C freestanding mode" OFF)
+option(WITH_CBOR2JSON "Compile code to convert from CBOR to JSON" OFF)
+option(WITH_FREESTANDING "Compile TinyCBOR in C freestanding mode" ON)
 if(WITH_FLOATING_POINT AND NOT WITH_FREESTANDING)
   option(WITH_FLOATING_POINT "Use floating point code in TinyCBOR" ON)
   option(WITH_TOOLS "Compile the TinyCBOR tools" ON)
@@ -115,6 +115,13 @@ target_compile_options(tinycbor PRIVATE
   >
 )
 
+target_compile_options(tinycbor INTERFACE
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:
+    -Wno-conversion
+    -Wno-sign-conversion
+  >
+)
+
 # Generate export macros
 generate_export_header(tinycbor
   BASE_NAME "cbor"
@@ -123,7 +130,7 @@ generate_export_header(tinycbor
 )
 
 # Generate version header
-configure_file(src/tinycbor-version.h.in tinycbor-version.h)
+# configure_file(src/tinycbor-version.h.in tinycbor-version.h)
 
 # Check for open_memstream and store the result in HAVE_OPEN_MEMSTREAM
 check_symbol_exists(open_memstream stdio.h HAVE_OPEN_MEMSTREAM)
@@ -148,8 +155,8 @@ target_include_directories(tinycbor
 
 install(FILES
   ${PROJECT_SOURCE_DIR}/src/cbor.h
-  ${PROJECT_BINARY_DIR}/tinycbor-version.h
-  ${PROJECT_BINARY_DIR}/tinycbor-export.h
+  # ${PROJECT_BINARY_DIR}/tinycbor-version.h
+  # ${PROJECT_BINARY_DIR}/tinycbor-export.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tinycbor
 )
 install(
