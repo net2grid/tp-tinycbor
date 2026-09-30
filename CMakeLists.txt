@@ -54,7 +54,7 @@ add_library(tinycbor
   src/cbor.h
 )
 if(WITH_FREESTANDING)
-  target_compile_options(tinycbor PUBLIC
+  target_compile_options(tinycbor PRIVATE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-ffreestanding>
   )
 else()
@@ -115,11 +115,10 @@ target_compile_options(tinycbor PRIVATE
   >
 )
 
-target_compile_options(tinycbor INTERFACE
-  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:
-    -Wno-conversion
-    -Wno-sign-conversion
-  >
+target_include_directories(tinycbor SYSTEM
+  PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
+  PUBLIC "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
+  PUBLIC "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
 # Generate export macros
