@@ -32,7 +32,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(TARGETS_EXPORT_NAME "TinyCBOR-targets")
 
 option(WITH_FLOATING_POINT "Use floating point code in TinyCBOR" ON)
-option(WITH_FREESTANDING "Compile TinyCBOR in C freestanding mode" OFF)
+option(WITH_FREESTANDING "Compile TinyCBOR in C freestanding mode" ON)
 if(WITH_FLOATING_POINT AND NOT WITH_FREESTANDING)
   option(WITH_CBOR2JSON "Compile code to convert from CBOR to JSON" ON)
   option(BUILD_EXAMPLES "Compile the TinyCBOR examples" OFF)
@@ -55,7 +55,7 @@ add_library(tinycbor
   src/cbor.h
 )
 if(WITH_FREESTANDING)
-  target_compile_options(tinycbor PUBLIC
+  target_compile_options(tinycbor PRIVATE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-ffreestanding>
   )
 else()
@@ -149,7 +149,7 @@ if(NOT HAVE_OPEN_MEMSTREAM)
   endif()
 endif()
 
-target_include_directories(tinycbor
+target_include_directories(tinycbor SYSTEM
   PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
   PUBLIC "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
   PUBLIC "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
